@@ -3,6 +3,7 @@
 import turtle
 import os 
 import random
+import math
 
 wn = turtle.Screen()
 wn.bgcolor("black")
@@ -28,10 +29,29 @@ player.color("blue")
 player.shape("triangle")
 player.penup()
 player.speed(0)
-player.setposition(0,-250)
+player.setposition(0,-280)
 player.setheading(90)
 
 playerspeed = 15
+
+#  create bullet
+
+bullet = turtle.Turtle()
+bullet.color("yellow")
+bullet.shape("triangle")
+bullet.speed(0)
+bullet.penup()
+bullet.setheading(90)
+bullet.shapesize(0.5,0.5)
+bullet.hideturtle()
+
+bulletspeed = 20
+
+#  bullet state
+# ready to fire
+bulletstate = "ready"
+# firing
+
 
 # create enemy
 enemies = []
@@ -64,11 +84,29 @@ def move_right():
         x = 280
     player.setx(x)
 
+def fire_bullet():
+    # changes global state to match that within function
+    global bulletstate
+    if bulletstate == "ready":
+        bulletstate = "fire"
+        # move the bullet to just above the player
+        x = player.xcor()
+        y = player.ycor() + 10
+        bullet.setposition(x,y)
+        bullet.showturtle()  
+
+def isCollision(t1, t2):
+    distance = math.sqrt(math.pow(t1.xcor()-t2.xcor(),2)+math.pow(t1.ycor()-t2.ycor(),2))
+    if distance < 15:
+        return True
+    else:
+        return False
+
 wn.listen()
 
 wn.onkeypress(move_left, "Left")
 wn.onkeypress(move_right, "Right")
-
+wn.onkeypress(fire_bullet, "space")
 
 
 while True: 
@@ -88,10 +126,32 @@ while True:
             y -= 40
             enemyspeed *= -1
             enemy.sety(y)
+    # move the bullet
+    if bulletstate == "fire":
+        y = bullet.ycor()
+        y += bulletspeed
+        bullet.sety(y)
 
+# check bif bullet hits border
 
+    if bullet.ycor() > 275:
+        bullet.hideturtle()
+        bulletstate = "ready"
 
-
+#  check for a collision of bullet & enemy
+    if isCollision(bullet, enemy):
+        # reset the bullet
+        bullet.hideturtle()
+        bulletstate = "ready"
+        bullet.setposition(0, -400)
+        # reset the enemy
+        enemy.setposition(-200,250)
+        
+    if isCollision(player, enemy):
+        player.hideturtle()
+        enemy.hideturtle()
+        print('Game over')
+        break
 
 
 wn.mainloop()
