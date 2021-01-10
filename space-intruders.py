@@ -34,15 +34,16 @@ player.setheading(90)
 playerspeed = 15
 
 # create enemy
-for _ in range(20):
+enemies = []
+for _ in range(1):
     enemy = turtle.Turtle()
     enemy.color("red")
     enemy.shape("circle")
     enemy.penup()
     enemy.speed(0)
     enemy.setposition(-200,250)
-    
-    enemyspeed = 2
+    enemies.append(enemy)
+    enemyspeed = 8
 
 
 
@@ -72,9 +73,25 @@ wn.onkeypress(move_right, "Right")
 
 while True: 
     wn.update()
+    for enemy in enemies:
+        x = enemy.xcor()
+        x += enemyspeed
+        enemy.setx(x)
+
+        if enemy.xcor() > 280:
+            y = enemy.ycor()
+            y -= 40
+            enemyspeed *= -1
+            enemy.sety(y)
+        if enemy.xcor() < -280:
+            y = enemy.ycor()
+            y -= 40
+            enemyspeed *= -1
+            enemy.sety(y)
 
 
 
 
 
 
+wn.mainloop()
