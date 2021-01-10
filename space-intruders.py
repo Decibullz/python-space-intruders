@@ -55,13 +55,15 @@ bulletstate = "ready"
 
 # create enemy
 enemies = []
-for _ in range(1):
+for _ in range(5):
     enemy = turtle.Turtle()
     enemy.color("red")
     enemy.shape("circle")
     enemy.penup()
     enemy.speed(0)
-    enemy.setposition(-200,250)
+    x = random.randint(-200,200)
+    y = random.randint(100,250)
+    enemy.setposition(x, y)
     enemies.append(enemy)
     enemyspeed = 8
 
@@ -127,6 +129,25 @@ while True:
             y -= 40
             enemyspeed *= -1
             enemy.sety(y)
+
+
+        if isCollision(bullet, enemy):
+            os.system("afplay 8b-explo.wav&")
+            # reset the bullet
+            bullet.hideturtle()
+            bulletstate = "ready"
+            bullet.setposition(0, -400)
+            # reset the enemy
+            x = random.randint(-200,200)
+            y = random.randint(100,250)
+            enemy.setposition(x, y)
+            
+        if isCollision(player, enemy):
+            os.system("afplay 8b-destroy.wav&")
+            player.hideturtle()
+            enemy.hideturtle()
+            print('Game over')
+            break
     # move the bullet
     if bulletstate == "fire":
         y = bullet.ycor()
@@ -139,22 +160,6 @@ while True:
         bullet.hideturtle()
         bulletstate = "ready"
 
-#  check for a collision of bullet & enemy
-    if isCollision(bullet, enemy):
-        os.system("afplay 8b-explo.wav&")
-        # reset the bullet
-        bullet.hideturtle()
-        bulletstate = "ready"
-        bullet.setposition(0, -400)
-        # reset the enemy
-        enemy.setposition(-200,250)
-        
-    if isCollision(player, enemy):
-        os.system("afplay 8b-destroy.wav&")
-        player.hideturtle()
-        enemy.hideturtle()
-        print('Game over')
-        break
 
 
 wn.mainloop()
