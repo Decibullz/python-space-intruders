@@ -88,6 +88,7 @@ def fire_bullet():
     # changes global state to match that within function
     global bulletstate
     if bulletstate == "ready":
+        os.system("afplay pew.wav&")
         bulletstate = "fire"
         # move the bullet to just above the player
         x = player.xcor()
@@ -132,7 +133,7 @@ while True:
         y += bulletspeed
         bullet.sety(y)
 
-# check bif bullet hits border
+# check if bullet hits border
 
     if bullet.ycor() > 275:
         bullet.hideturtle()
@@ -140,6 +141,7 @@ while True:
 
 #  check for a collision of bullet & enemy
     if isCollision(bullet, enemy):
+        os.system("afplay 8b-explo.wav&")
         # reset the bullet
         bullet.hideturtle()
         bulletstate = "ready"
@@ -148,6 +150,7 @@ while True:
         enemy.setposition(-200,250)
         
     if isCollision(player, enemy):
+        os.system("afplay 8b-destroy.wav&")
         player.hideturtle()
         enemy.hideturtle()
         print('Game over')
