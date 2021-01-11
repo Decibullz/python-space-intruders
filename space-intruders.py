@@ -22,6 +22,18 @@ for side in range(4):
     border_pen.lt(90)
 border_pen.hideturtle()
 
+#  set score
+
+score = 0
+
+pen =turtle.Turtle()
+pen.color("white")
+pen.speed(0)
+pen.penup()
+pen.setposition(-290,280)
+font = ("Courier", 14, "normal")
+pen.write("Score: {}".format(score), align="left", font=font)
+pen.hideturtle()
 # create player turtle
 
 player = turtle.Turtle()
@@ -120,15 +132,17 @@ while True:
         enemy.setx(x)
 
         if enemy.xcor() > 280:
-            y = enemy.ycor()
-            y -= 40
+            for e in enemies:
+                y = e.ycor()
+                y -= 40
+                e.sety(y)
             enemyspeed *= -1
-            enemy.sety(y)
         if enemy.xcor() < -280:
-            y = enemy.ycor()
-            y -= 40
+            for e in enemies:
+                y = e.ycor()
+                y -= 40
+                e.sety(y)
             enemyspeed *= -1
-            enemy.sety(y)
 
 
         if isCollision(bullet, enemy):
@@ -137,6 +151,9 @@ while True:
             bullet.hideturtle()
             bulletstate = "ready"
             bullet.setposition(0, -400)
+            score += 100
+            pen.clear()
+            pen.write("Score: {}".format(score), align="left", font=font)
             # reset the enemy
             x = random.randint(-200,200)
             y = random.randint(100,250)
@@ -145,7 +162,8 @@ while True:
         if isCollision(player, enemy):
             os.system("afplay 8b-destroy.wav&")
             player.hideturtle()
-            enemy.hideturtle()
+            for enemy in enemies:
+                enemy.hideturtle()
             print('Game over')
             break
     # move the bullet
