@@ -6,21 +6,26 @@ import random
 import math
 
 wn = turtle.Screen()
-wn.bgcolor("black")
+wn.bgcolor("white")
 wn.title("Space Inturders by Cody Snell")
+wn.bgpic("galactic.gif")
+wn.setup(width=800, height=600)
+
+wn.register_shape("bomber.gif")
+wn.register_shape("intruder.gif")
 
 #  draw border
-border_pen = turtle.Turtle()
-border_pen.speed(0)
-border_pen.color("white")
-border_pen.penup()
-border_pen.setposition(-300,-300)
-border_pen.pensize(3)
-border_pen.pendown()
-for side in range(4):
-    border_pen.fd(600)
-    border_pen.lt(90)
-border_pen.hideturtle()
+# border_pen = turtle.Turtle()
+# border_pen.speed(0)
+# border_pen.color("black")
+# border_pen.penup()
+# border_pen.setposition(-300,-300)
+# border_pen.pensize(3)
+# border_pen.pendown()
+# for side in range(4):
+#     border_pen.fd(600)
+#     border_pen.lt(90)
+# border_pen.hideturtle()
 
 #  set score
 
@@ -31,14 +36,14 @@ pen.color("white")
 pen.speed(0)
 pen.penup()
 pen.setposition(-290,280)
-font = ("Courier", 14, "normal")
+font = ("Arial", 14, "bold")
 pen.write("Score: {}".format(score), align="left", font=font)
 pen.hideturtle()
 # create player turtle
 
 player = turtle.Turtle()
 player.color("blue")
-player.shape("triangle")
+player.shape("bomber.gif")
 player.penup()
 player.speed(0)
 player.setposition(0,-280)
@@ -53,6 +58,7 @@ bullet.color("yellow")
 bullet.shape("triangle")
 bullet.speed(0)
 bullet.penup()
+bullet.setposition(0, -400)
 bullet.setheading(90)
 bullet.shapesize(0.5,0.5)
 bullet.hideturtle()
@@ -70,7 +76,7 @@ enemies = []
 for _ in range(5):
     enemy = turtle.Turtle()
     enemy.color("red")
-    enemy.shape("circle")
+    enemy.shape("intruder.gif")
     enemy.penup()
     enemy.speed(0)
     x = random.randint(-200,200)
