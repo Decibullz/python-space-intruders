@@ -4,11 +4,21 @@ import turtle
 import os 
 import random
 import math
+import platform
+import time
+
+# if on windows import windsound
+if platform.system() == "Windows":
+    try:
+        import windsound
+    except:
+        print("windsound module not available")
 
 wn = turtle.Screen()
-wn.bgcolor("white")
+wn.bgcolor("grey")
 wn.title("Space Inturders by Cody Snell")
 wn.bgpic("galactic.gif")
+wn.tracer(0)
 wn.setup(width=800, height=600)
 
 wn.register_shape("bomber.gif")
@@ -32,7 +42,7 @@ wn.register_shape("intruder.gif")
 score = 0
 
 pen =turtle.Turtle()
-pen.color("white")
+pen.color("red")
 pen.speed(0)
 pen.penup()
 pen.setposition(-290,280)
@@ -42,7 +52,7 @@ pen.hideturtle()
 # create player turtle
 
 player = turtle.Turtle()
-player.color("blue")
+player.color("black")
 player.shape("bomber.gif")
 player.penup()
 player.speed(0)
@@ -58,12 +68,12 @@ bullet.color("yellow")
 bullet.shape("triangle")
 bullet.speed(0)
 bullet.penup()
-bullet.setposition(0, -400)
+bullet.setposition(-500, -500)
 bullet.setheading(90)
 bullet.shapesize(0.5,0.5)
 bullet.hideturtle()
 
-bulletspeed = 20
+bulletspeed = 15
 
 #  bullet state
 # ready to fire
@@ -73,30 +83,37 @@ bulletstate = "ready"
 
 # create enemy
 enemies = []
-for _ in range(5):
+
+enemy_start_y = 250
+enemy_start_x = -200
+enemy_number = 0
+
+for _ in range(30):
     enemy = turtle.Turtle()
     enemy.color("red")
     enemy.shape("intruder.gif")
     enemy.penup()
     enemy.speed(0)
-    x = random.randint(-200,200)
-    y = random.randint(100,250)
+    x = enemy_start_x + (50 * enemy_number)
+    y = enemy_start_y
     enemy.setposition(x, y)
+    enemy_number += 1
+    if enemy_number == 10:
+        enemy_start_y -=50
+        enemy_number = 0
     enemies.append(enemy)
-    enemyspeed = 8
-
-
-
+    enemyspeed = .7
 
 
 # functions
 def move_left():
-    player.speed = -15
-
+    player.speed = -3
 
 def move_right():
-    player.speed = 15
+    player.speed = 3
 
+def stop_player():
+	player.speed = 0
 
 def move_player():
     x = player.xcor()
@@ -107,12 +124,26 @@ def move_player():
         x = 280
     player.setx(x)
 
+def play_sound(sound_file, time = 0):
+    # Windows
+    if platform.system() == "Windows":
+        windsound.PlaySound(sound_file, winsound.SND_ASYNC)
+    # Linux
+    elif platform.system() == "Linux":
+        os.system("aplay -q {}&".format(sound_file))
+    # Mac
+    else:
+        os.system("afplay {}&".format(sound_file))
+
+    # repeat sound
+    if time > 0:
+        turtle.ontimer(lambda: play_sound(sound_file, time), t =int(time*1000))
 
 def fire_bullet():
     # changes global state to match that within function
     global bulletstate
     if bulletstate == "ready":
-        os.system("afplay pew.wav&")
+        play_sound("pew.wav")
         bulletstate = "fire"
         # move the bullet to just above the player
         x = player.xcor()
@@ -127,13 +158,16 @@ def isCollision(t1, t2):
     else:
         return False
 
+
 wn.listen()
 
 wn.onkeypress(move_left, "Left")
 wn.onkeypress(move_right, "Right")
+wn.onkeyrelease(stop_player, "Left")
+wn.onkeyrelease(stop_player, "Right")
 wn.onkeypress(fire_bullet, "space")
 
-
+# play_sound("bg-sound.wav", 2.6) commentend out sound file plays too loud
 while True: 
 
     wn.update()
@@ -158,7 +192,7 @@ while True:
 
 
         if isCollision(bullet, enemy):
-            os.system("afplay 8b-explo.wav&")
+            play_sound("8b-explo.wav")
             # reset the bullet
             bullet.hideturtle()
             bulletstate = "ready"
@@ -167,17 +201,35 @@ while True:
             pen.clear()
             pen.write("Score: {}".format(score), align="left", font=font)
             # reset the enemy
-            x = random.randint(-200,200)
-            y = random.randint(100,250)
-            enemy.setposition(x, y)
-            
+            enemy.setposition(0, 10000)
+            enemy.speed = 0
+
         if isCollision(player, enemy):
-            os.system("afplay 8b-destroy.wav&")
-            player.hideturtle()
+            print("1")
+            pen.clear()
+            pen.setposition(0,0)
+            pen.write("GAME OVER Score: {}".format(score), align="center", font=("Courier", 24, "normal"))
+            pen.setposition(-290,280)
+            bullet.hideturtle()
+            bulletstate = "ready"
+            bullet.setposition(0, -400)
+            enemy_start_y = 250
+            enemy_start_x = -200
+            enemy_number = 0
             for enemy in enemies:
-                enemy.hideturtle()
-            print('Game over')
-            break
+                x = enemy_start_x + (50 * enemy_number)
+                y = enemy_start_y
+                enemy.setposition(x, y)
+                enemy_number += 1
+                if enemy_number == 10:
+                    enemy_start_y -=50
+                    enemy_number = 0
+            wn.update()
+            time.sleep(5)
+            score = 0
+            pen.clear()
+            pen.write("Score: {}".format(score), align="left", font=font)
+        
     # move the bullet
     if bulletstate == "fire":
         y = bullet.ycor()
@@ -190,6 +242,56 @@ while True:
         bullet.hideturtle()
         bulletstate = "ready"
 
+    if score == 3000:
+        pen.clear()
+        pen.setposition(0,0)
+        pen.write("YOU WON!! Score: {}".format(score), align="center", font=("Courier", 24, "normal"))
+        pen.setposition(-290,280)
+        bullet.hideturtle()
+        bulletstate = "ready"
+        bullet.setposition(0, -400)
+        enemy_start_y = 250
+        enemy_start_x = -200
+        enemy_number = 0
+        for enemy in enemies:
+            x = enemy_start_x + (50 * enemy_number)
+            y = enemy_start_y
+            enemy.setposition(x, y)
+            enemy_number += 1
+            if enemy_number == 10:
+                enemy_start_y -=50
+                enemy_number = 0
+        wn.update()
+        time.sleep(5)
+        score = 0
+        pen.clear()
+        pen.write("Score: {}".format(score), align="left", font=font)
+
+    if enemy.ycor() < -270:
+        print("2")
+        pen.clear()
+        pen.setposition(0,0)
+        pen.write("GAME OVER Score: {}".format(score), align="center", font=("Courier", 24, "normal"))
+        pen.setposition(-290,280)
+        bullet.hideturtle()
+        bulletstate = "ready"
+        bullet.setposition(0, -400)
+        enemy_start_y = 250
+        enemy_start_x = -200
+        enemy_number = 0
+        for enemy in enemies:
+            x = enemy_start_x + (50 * enemy_number)
+            y = enemy_start_y
+            enemy.setposition(x, y)
+            enemy_number += 1
+            if enemy_number == 10:
+                enemy_start_y -=50
+                enemy_number = 0
+        wn.update()
+        time.sleep(5)
+        score = 0
+        pen.clear()
+        pen.write("Score: {}".format(score), align="left", font=font)
 
 
 wn.mainloop()
