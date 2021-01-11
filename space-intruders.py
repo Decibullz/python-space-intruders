@@ -48,8 +48,8 @@ player.penup()
 player.speed(0)
 player.setposition(0,-280)
 player.setheading(90)
+player.speed = 0
 
-playerspeed = 15
 
 #  create bullet
 
@@ -91,18 +91,22 @@ for _ in range(5):
 
 # functions
 def move_left():
-    x = player.xcor()
-    x -= playerspeed
-    if x < -280:
-        x = -280
-    player.setx(x)
+    player.speed = -15
+
 
 def move_right():
+    player.speed = 15
+
+
+def move_player():
     x = player.xcor()
-    x += playerspeed
+    x += player.speed
+    if x < -280:
+        x = -280
     if x > 280:
         x = 280
     player.setx(x)
+
 
 def fire_bullet():
     # changes global state to match that within function
@@ -131,7 +135,9 @@ wn.onkeypress(fire_bullet, "space")
 
 
 while True: 
+
     wn.update()
+    move_player()
     for enemy in enemies:
         x = enemy.xcor()
         x += enemyspeed
