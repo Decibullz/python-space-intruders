@@ -10,9 +10,9 @@ import time
 # if on windows import windsound
 if platform.system() == "Windows":
     try:
-        import windsound
+        import winsound
     except:
-        print("windsound module not available")
+        print("winsound module not available")
 
 wn = turtle.Screen()
 wn.bgcolor("grey")
@@ -127,7 +127,7 @@ def move_player():
 def play_sound(sound_file, time = 0):
     # Windows
     if platform.system() == "Windows":
-        windsound.PlaySound(sound_file, winsound.SND_ASYNC)
+        winsound.PlaySound(sound_file, winsound.SND_ASYNC)
     # Linux
     elif platform.system() == "Linux":
         os.system("aplay -q {}&".format(sound_file))
