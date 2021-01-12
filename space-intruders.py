@@ -16,7 +16,7 @@ if platform.system() == "Windows":
 
 wn = turtle.Screen()
 wn.bgcolor("grey")
-wn.title("Space Inturders by Cody Snell")
+wn.title("Space Intruders by Cody Snell")
 wn.bgpic("galactic.gif")
 wn.tracer(0)
 wn.setup(width=800, height=600)
@@ -266,32 +266,32 @@ while True:
         score = 0
         pen.clear()
         pen.write("Score: {}".format(score), align="left", font=font)
-
-    if enemy.ycor() < -270:
-        print("2")
-        pen.clear()
-        pen.setposition(0,0)
-        pen.write("GAME OVER Score: {}".format(score), align="center", font=("Courier", 24, "normal"))
-        pen.setposition(-290,280)
-        bullet.hideturtle()
-        bulletstate = "ready"
-        bullet.setposition(0, -400)
-        enemy_start_y = 250
-        enemy_start_x = -200
-        enemy_number = 0
-        for enemy in enemies:
-            x = enemy_start_x + (50 * enemy_number)
-            y = enemy_start_y
-            enemy.setposition(x, y)
-            enemy_number += 1
-            if enemy_number == 10:
-                enemy_start_y -=50
-                enemy_number = 0
-        wn.update()
-        time.sleep(5)
-        score = 0
-        pen.clear()
-        pen.write("Score: {}".format(score), align="left", font=font)
+    for enemy in enemies:
+        if enemy.ycor() < -260:
+            print("2")
+            pen.clear()
+            pen.setposition(0,0)
+            pen.write("GAME OVER Score: {}".format(score), align="center", font=("Courier", 24, "normal"))
+            pen.setposition(-290,280)
+            bullet.hideturtle()
+            bulletstate = "ready"
+            bullet.setposition(0, -400)
+            enemy_start_y = 250
+            enemy_start_x = -200
+            enemy_number = 0
+            for enemy in enemies:
+                x = enemy_start_x + (50 * enemy_number)
+                y = enemy_start_y
+                enemy.setposition(x, y)
+                enemy_number += 1
+                if enemy_number == 10:
+                    enemy_start_y -=50
+                    enemy_number = 0
+            wn.update()
+            time.sleep(5)
+            score = 0
+            pen.clear()
+            pen.write("Score: {}".format(score), align="left", font=font)
 
 
 wn.mainloop()
