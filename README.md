@@ -13,7 +13,7 @@ python space-intruders.py
 ## Screenshots
 <p align="center">
 <img src="images/screenshot.png">
-
+<img src ="images/space-intruders.gif">
 </p>
 
 ## Controls

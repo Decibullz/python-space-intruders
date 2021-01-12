@@ -7,7 +7,7 @@ import math
 import platform
 import time
 
-# if on windows import windsound
+# if on windows import winsound
 if platform.system() == "Windows":
     try:
         import winsound
